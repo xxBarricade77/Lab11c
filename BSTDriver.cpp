@@ -10,6 +10,7 @@ using CSC2110::CD;
 #include <iostream>
 using namespace std;
 
+
 void deleteCDs(ListArray<CD>* list)
 {
    ListArrayIterator<CD>* iter = list->iterator();
@@ -22,6 +23,7 @@ void deleteCDs(ListArray<CD>* list)
 
    delete iter;
 }
+
 
 int main()
 {
