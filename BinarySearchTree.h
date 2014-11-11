@@ -51,7 +51,7 @@ class BinarySearchTree : public Drawable
       bool isBalanced();
 
       T** toArray();
-      static T** treeSort(T** items, int num_itemss, int (*comp_items) (T* item_1, T* item_2), int (*comp_keys) (String* key, T* item));
+      static T** treeSort(T** items, int num_items, int (*comp_items) (T* item_1, T* item_2), int (*comp_keys) (String* key, T* item));
 
       virtual void draw(Cairo::RefPtr<Cairo::Context> cr, int width, int height);
       virtual void mouseClicked(int x, int y);
@@ -83,13 +83,13 @@ TreeNode<T>* BinarySearchTree<T>::removeItem(TreeNode<T>* tNode, String* sk)
    }
    else if (compare < 0)  //goes left
    {
-      TreeNode<T> subtree = removeItem(tNode -> getLeft(), sk);
+      TreeNode<T>* subtree = removeItem(tNode -> getLeft(), sk);
       tNode -> setLeft(subtree);
       return tNode;
    }
    else  //goes right
    {
-      TreeNode<T> subtree = removeItem(tNode -> getRight(), sk);
+      TreeNode<T>* subtree = removeItem(tNode -> getRight(), sk);
       tNode -> setRight(subtree);
       return tNode;
    }
@@ -121,7 +121,7 @@ TreeNode<T>* BinarySearchTree<T>::removeNode(TreeNode<T>* tNode)
       T* item = findLeftMost(tNode -> getRight());
       tNode -> setItem(item);
 
-      TreeNode<T> subtree = removeLeftMost(tNode -> getRight());
+      TreeNode<T>* subtree = removeLeftMost(tNode -> getRight());
       tNode -> setRight(subtree);
       return tNode;
    }
@@ -131,21 +131,30 @@ template < class T >
 T* BinarySearchTree<T>::findLeftMost(TreeNode<T>* tNode)
 {
    //DO THIS (use a while loop)
-
-
-
-
-
+   while (tNode -> getLeft() != NULL)
+   {
+      tNode = tNode -> getLeft();
+   }
+   return tNode -> getItem();
 }
 
 template < class T >
 TreeNode<T>* BinarySearchTree<T>::removeLeftMost(TreeNode<T>* tNode)
 {
    //DO THIS (recursion)
+   if (tNode -> getLeft() == NULL)
+   {
+      TreeNode<T>* rNode = tNode -> getRight();
 
-
-
-
+      delete tNode;
+      return rNode;
+   }
+   else
+   {
+      TreeNode<T>* subtree = removeLeftMost(tNode -> getLeft());
+      tNode -> setLeft(subtree);
+      return tNode;
+   }
 
 }
 
@@ -153,18 +162,34 @@ template < class T >
 T** BinarySearchTree<T>::toArray()
 {
    //DO THIS
+   T** sorted_items = new T*[sze];
+   int i = 0;
 
+   BinaryTreeIterator<T>* iter = iterator();
+   iter -> setInorder();
 
-
+   while(iter -> hasNext())
+   {
+      sorted_items[i] = iter -> next();
+      i++;
+   }
+   delete iter;
+   return sorted_items;
 }
 
 template < class T >
-T** BinarySearchTree<T>::treeSort(T** items, int num_itemss, int (*comp_items) (T* item_1, T* item_2), int (*comp_keys) (String* key, T* item))
+T** BinarySearchTree<T>::treeSort(T** items, int num_items, int (*comp_items) (T* item_1, T* item_2), int (*comp_keys) (String* key, T* item))
 {
    //DO THIS
+   BinarySearchTree<T>* BST = new BinarySearchTree<T>(*comp_items, *comp_keys);
 
-
-
+   for (int i = 0; i < num_items; i++)
+   {
+      BST -> insert(items[i]);
+   }
+   T** le_sorted = BST -> toArray();
+   delete BST;
+   return le_sorted;
 }
 
 template < class T >
